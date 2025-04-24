@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Decrypted Messages</h2>
+
+{% if messages %}
+<ul>
+    {% for msg, decrypted in messages %}
+    <li style="margin-bottom: 20px;">
+        <strong>From:</strong> {{ msg.user.username }} ({{ msg.user.email }})<br>
+        <strong>Subject:</strong> {{ msg.subject }}<br>
+        <strong>Original Message:</strong><br>
+        <pre>{{ decrypted }}</pre>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No messages found.</p>
+{% endif %}
+
+<p><a href="{% url 'send_email' %}">Send New Email</a> | <a href="{% url 'logout' %}">Logout</a></p>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Email Sent{% endblock %}
+
+{% block content %}
+<div class="card mx-auto mt-5" style="max-width: 500px;">
+    <div class="card-body text-center">
+        <h3 class="text-success">✅ Email Sent Successfully!</h3>
+        <p><strong>Recipient:</strong> {{ recipient }}</p>
+        <p><strong>Bandwidth Used:</strong> {{ bandwidth_used }} KB</p>
+        <a href="{% url 'send_email' %}" class="btn btn-primary">Send Another Email</a>
+    </div>
+</div>
+{% endblock %}
+    
