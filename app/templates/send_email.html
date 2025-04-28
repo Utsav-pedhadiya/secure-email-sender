@@ -1,28 +1,52 @@
-<!-- app/templates/send_email.html -->
 {% extends 'base.html' %}
+
+{% block title %}Send Secure Email{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card p-4">
-            <h3 class="text-center mb-4">Send Encrypted Email</h3>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.non_field_errors }}
-                <div class="mb-3">
-                    {{ form.recipient_email.label_tag }}
-                    {{ form.recipient_email }}
-                </div>
-                <div class="mb-3">
-                    {{ form.subject.label_tag }}
-                    {{ form.subject }}
-                </div>
-                <div class="mb-3">
-                    {{ form.message.label_tag }}
-                    {{ form.message }}
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Send Secure Email</button>
-            </form>
+  <div class="col-md-6">
+    <div class="card p-4 shadow-sm">
+      <h2 class="text-center mb-4">Send Encrypted Email</h2>
+
+      <!-- Show messages -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label for="recipient_email" class="form-label">Recipient Email</label>
+          {{ form.recipient_email }}
+          {% for error in form.recipient_email.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+          {% endfor %}
         </div>
+
+        <div class="mb-3">
+          <label for="subject" class="form-label">Subject</label>
+          {{ form.subject }}
+          {% for error in form.subject.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="message" class="form-label">Message</label>
+          {{ form.message }}
+          {% for error in form.message.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Send Secure Email</button>
+      </form>
     </div>
+  </div>
 </div>
 {% endblock %}

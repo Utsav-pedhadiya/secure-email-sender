@@ -1,21 +1,55 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Your Decrypted Messages</h2>
 
-{% if messages %}
-<ul>
-    {% for msg, decrypted in messages %}
-    <li style="margin-bottom: 20px;">
-        <strong>From:</strong> {{ msg.user.username }} ({{ msg.user.email }})<br>
-        <strong>Subject:</strong> {{ msg.subject }}<br>
-        <strong>Original Message:</strong><br>
-        <pre>{{ decrypted }}</pre>
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No messages found.</p>
-{% endif %}
+<div class="container py-5">
+    <h2 class="text-center mb-4">Received Messages</h2>
 
-<p><a href="{% url 'send_email' %}">Send New Email</a> | <a href="{% url 'logout' %}">Logout</a></p>
+    {% if messages %}
+        {% for msg, decrypted in messages %}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Subject: {{ msg.subject }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        From: {{ msg.user.username }} ({{ msg.user.email }})
+                    </h6>
+                    <p class="card-text">
+                        {{ decrypted|slice:":100" }}{% if decrypted|length > 100 %}...
+                        <button class="btn btn-sm btn-primary" onclick="showFullMessage('{{ decrypted|escapejs }}')">Read More</button>
+                        {% endif %}
+                    </p>
+                    <small class="text-muted">Received at: {{ msg.sent_at }}</small>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-warning text-center">
+            No messages found!
+        </div>
+    {% endif %}
+</div>
+
+<!-- Modal for Full Message -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content shadow">
+      <div class="modal-header">
+        <h5 class="modal-title" id="messageModalLabel">Full Message</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalMessageContent">
+        <!-- Decrypted full message will be injected here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Modal -->
+<script>
+function showFullMessage(message) {
+    document.getElementById('modalMessageContent').innerText = message;
+    var myModal = new bootstrap.Modal(document.getElementById('messageModal'));
+    myModal.show();
+}
+</script>
+
 {% endblock %}

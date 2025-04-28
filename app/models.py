@@ -15,3 +15,4 @@ class EmailLog(models.Model):
     sender_ip = models.GenericIPAddressField(default=get_ip)
     file_attachment = models.FileField(upload_to='attachments/', blank=True, null=True)
     bandwidth_used = models.FloatField(default=0.0)
+

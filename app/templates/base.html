@@ -53,25 +53,29 @@
 </head>
 <body>
 
+<!-- templates/base.html -->
 <nav class="navbar navbar-expand-lg">
-  <div class="container-fluid navbar-container">
+  <div class="container-fluid">
     <a class="navbar-brand" href="#">Secure Email</a>
-
-    <div class="navbar-user-actions">
+    <div class="navbar-text ms-auto">
       {% if request.user.is_authenticated %}
-        <span class="navbar-text">
-          Welcome, <strong>{{ request.user.username }}</strong>!
-        </span>
-        <form action="{% url 'logout' %}" method="post" class="d-inline">
-          {% csrf_token %}
-          <button type="submit" class="logout-btn">Logout</button>
-        </form>
+        Welcome, <strong>{{ request.user.username }}</strong>!
       {% else %}
-        <a href="{% url 'login' %}" class="btn btn-light btn-sm">Login</a>
+        {% if request.path != '/login/' and request.path != '/register/' %}
+          <a href="{% url 'login' %}" class="btn btn-light btn-sm">Login</a>
+        {% endif %}
       {% endif %}
     </div>
+
+    {% if request.user.is_authenticated %}
+    <form action="{% url 'logout' %}" method="post" class="d-inline ms-2">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-light btn-sm">Logout</button>
+    </form>
+    {% endif %}
   </div>
 </nav>
+
 
 <div class="container py-5">
   {% block content %}{% endblock %}

@@ -4,12 +4,20 @@ from cryptography.fernet import Fernet
 # === Encryption Key Setup ===
 KEY_FILE = "encryption.key"
 
-if not os.path.exists(KEY_FILE):
-    with open(KEY_FILE, "wb") as keyfile:
-        keyfile.write(Fernet.generate_key())
+def create_key_if_missing():
+    if not os.path.exists(KEY_FILE):
+        key = Fernet.generate_key()
+        with open(KEY_FILE, "wb") as keyfile:
+            keyfile.write(key)
+        print("✅ Encryption key created and saved.")
+    else:
+        print("🔒 Encryption key already exists, not creating a new one.")
 
 def load_key():
     return open(KEY_FILE, "rb").read()
+
+# Call this only once at server startup
+create_key_if_missing()
 
 def encrypt_message(message):
     cipher = Fernet(load_key())
@@ -17,7 +25,10 @@ def encrypt_message(message):
 
 def decrypt_message(encrypted_message):
     cipher = Fernet(load_key())
-    return cipher.decrypt(encrypted_message.encode()).decode()
+    try:
+        return cipher.decrypt(encrypted_message.encode()).decode()
+    except Exception:
+        return "❌ Cannot decrypt this message (corrupted or wrong key)"
 
 # === Bandwidth Estimation ===
 def calculate_bandwidth(message, file=None):
